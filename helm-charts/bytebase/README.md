@@ -129,6 +129,7 @@ upgrade bytebase-release bytebase-repo/bytebase
 |               `bytebase.extraSecretMounts`               |                                                                               Additional Bytebase secret mounts. Defined as an array of volumeMount objects.                                                                               |                               []                               |
 |                 `bytebase.extraVolumes`                  |                                                                                    Additional Bytebase volumes. Defined as an array of volume objects.                                                                                     |                               []                               |
 | `bytebase.autoscaling.enabled` | Omit `spec.replicas` from the StatefulSet so an external autoscaler (HPA, KEDA) owns the replica count. | false |
+| `bytebase.autoscaling.maxReplicas` | Highest replica count the external autoscaler may set. Chart 1.1.4 cannot pass `--ha`, so the render fails above 1. | 1 |
 
 **If you enable bytebase persistence, you should provide storageClass and storage to bytebase to request a PVC, or provide the already existed PVC by existingClaim.**
 

@@ -117,6 +117,9 @@ bytebase:
   # Proposed upstream: https://github.com/bytebase/bytebase/pull/21919
   autoscaling:
     enabled: false
+    # The highest replica count the external autoscaler may set. Chart 1.1.4 cannot
+    # start servers with --ha, so the render fails above 1.
+    maxReplicas: 1
 
 # Service account configuration
 # ref: https://kubernetes.io/docs/concepts/security/service-accounts/

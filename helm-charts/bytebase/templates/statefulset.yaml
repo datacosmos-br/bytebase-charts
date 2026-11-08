@@ -28,6 +28,10 @@
 # bytbease.persistence
 {{- $persistenceEnable := .Values.bytebase.persistence.enabled -}}
 {{- $persistenceExistingClaim := .Values.bytebase.persistence.existingClaim -}}
+{{- $autoscaling := .Values.bytebase.autoscaling | default dict -}}
+{{- if and $autoscaling.enabled (gt (int ($autoscaling.maxReplicas | default 1)) 1) -}}
+{{- fail "bytebase.autoscaling.maxReplicas above 1 runs more than one Bytebase server, which needs --ha; chart 1.1.4 cannot pass it, so keep the autoscaler maximum at 1" -}}
+{{- end -}}
 {{- $persistenceStorage := .Values.bytebase.persistence.storage -}}
 {{- $persistenceStorageClass := .Values.bytebase.persistence.storageClass }}
 # bytbease.resources
@@ -45,7 +49,7 @@ spec:
     matchLabels:
       app: bytebase
   serviceName: "bytebase"
-  {{- if not (.Values.bytebase.autoscaling | default dict).enabled }}
+  {{- if not $autoscaling.enabled }}
   replicas: 1
   {{- end }}
   template:
