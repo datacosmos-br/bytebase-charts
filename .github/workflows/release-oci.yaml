@@ -1,0 +1,40 @@
+# Publishes every chart under helm-charts/ to oci://ghcr.io/<owner>/<repo> with the
+# job token. A version that already exists in the registry is never overwritten.
+name: release-oci
+
+"on":
+  push:
+    branches: ["datacosmos/charts"]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  release-oci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Push the Helm charts to GHCR
+        env:
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          registry="oci://ghcr.io/${REPOSITORY,,}"
+          printf '%s' "${REGISTRY_TOKEN}" | helm registry login ghcr.io --username "${REGISTRY_USER}" --password-stdin
+          mkdir -p packages
+          for chart in helm-charts/*/; do
+            helm lint "${chart}"
+            helm package "${chart}" --destination packages
+          done
+          for package in packages/*.tgz; do
+            name="$(helm show chart "${package}" | yq '.name')"
+            version="$(helm show chart "${package}" | yq '.version')"
+            if helm show chart "${registry}/${name}" --version "${version}" >/dev/null 2>&1; then
+              echo "${name} ${version} is already published"
+              continue
+            fi
+            helm push "${package}" "${registry}"
+          done
