@@ -110,6 +110,14 @@ bytebase:
   #   value: "value"
   #   effect: "NoSchedule"
 
+  # Hand the StatefulSet replica count to an external autoscaler (an HPA, or a
+  # KEDA ScaledObject/HTTPScaledObject that scales to zero). When enabled the chart
+  # omits spec.replicas, so GitOps tools that diff the rendered manifest (Argo CD,
+  # Flux) neither revert nor report the count the autoscaler sets.
+  # Proposed upstream: https://github.com/bytebase/bytebase/pull/21919
+  autoscaling:
+    enabled: false
+
 # Service account configuration
 # ref: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:

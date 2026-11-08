@@ -1,10 +1,11 @@
 apiVersion: v2
 name: bytebase
-version: 1.1.4
+version: 1.1.4-dc1
 description: Safe database schema change and version control for DevOps teams.
 type: application
 home: https://www.bytebase.com/
 sources:
+  - https://github.com/datacosmos-br/bytebase-charts
   - https://github.com/bytebase/bytebase
 icon: https://raw.githubusercontent.com/bytebase/bytebase.com/main/public/images/logo.svg
 maintainers:
