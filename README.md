@@ -2,8 +2,16 @@
 
 Datacosmos fork of the Bytebase Helm chart (`helm-charts/bytebase` in
 [bytebase/bytebase](https://github.com/bytebase/bytebase)). The `datacosmos/charts`
-branch carries only the chart; each push publishes it to
-`oci://ghcr.io/datacosmos-br/bytebase-charts` (`.github/workflows/release-oci.yaml`).
+branch carries only the chart. Like the other datacosmos-br chart forks, it is
+published by hand to `oci://ghcr.io/datacosmos-br/bytebase-charts` (GitHub Actions
+is disabled for this repository by the organization):
+
+```sh
+helm package helm-charts/bytebase --destination packages
+helm push packages/bytebase-<version>.tgz oci://ghcr.io/datacosmos-br/bytebase-charts
+```
+
+A published version is never overwritten; every change gets the next `-dcN`.
 
 | Version | Base | Change | Upstream |
 |---|---|---|---|
